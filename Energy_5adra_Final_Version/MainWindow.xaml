@@ -1,0 +1,43 @@
+﻿<Window x:Class="Energy_5adra_Final_Version.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        Title="Arduino Sensor Dashboard" Height="600" Width="800" Background="#1e1e1e">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Arduino Real-Time Sensor Monitor" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <StackPanel Margin="20">
+                <TextBlock Text="Voltage" FontSize="16" Foreground="White"/>
+                <TextBlock x:Name="VoltageText" FontSize="20" FontWeight="Bold" Foreground="#00bfff"/>
+            </StackPanel>
+            <StackPanel Margin="20">
+                <TextBlock Text="Current" FontSize="16" Foreground="White"/>
+                <TextBlock x:Name="CurrentText" FontSize="20" FontWeight="Bold" Foreground="#00ff7f"/>
+            </StackPanel>
+            <StackPanel Margin="20">
+                <TextBlock Text="Resistance" FontSize="16" Foreground="White"/>
+                <TextBlock x:Name="ResistanceText" FontSize="20" FontWeight="Bold" Foreground="#ffa500"/>
+            </StackPanel>
+            <StackPanel Margin="20">
+                <TextBlock Text="Power" FontSize="16" Foreground="White"/>
+                <TextBlock x:Name="PowerText" FontSize="20" FontWeight="Bold" Foreground="#ff4500"/>
+            </StackPanel>
+        </StackPanel>
+
+        <lvc:CartesianChart Grid.Row="2" x:Name="SensorChart" Foreground="White">
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Title="Time" Foreground="White"/>
+            </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Values" Foreground="White"/>
+            </lvc:CartesianChart.AxisY>
+        </lvc:CartesianChart>
+    </Grid>
+</Window>
