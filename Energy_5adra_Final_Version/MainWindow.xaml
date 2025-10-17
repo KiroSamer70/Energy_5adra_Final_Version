@@ -8,11 +8,19 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Arduino Real-Time Sensor Monitor" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+        <!-- Title -->
+        <TextBlock Text="Arduino Real-Time Sensor Monitor"
+                   FontSize="24" FontWeight="Bold"
+                   Foreground="White"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20"/>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+        <!-- Sensor values -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal"
+                    HorizontalAlignment="Center" Margin="0,0,0,20">
             <StackPanel Margin="20">
                 <TextBlock Text="Voltage" FontSize="16" Foreground="White"/>
                 <TextBlock x:Name="VoltageText" FontSize="20" FontWeight="Bold" Foreground="#00bfff"/>
@@ -31,7 +39,8 @@
             </StackPanel>
         </StackPanel>
 
-        <lvc:CartesianChart Grid.Row="2" x:Name="SensorChart" Foreground="White">
+        <!-- Chart -->
+        <lvc:CartesianChart Grid.Row="2" x:Name="SensorChart" Foreground="White" Margin="0,0,0,10">
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis Title="Time" Foreground="White"/>
             </lvc:CartesianChart.AxisX>
@@ -39,5 +48,42 @@
                 <lvc:Axis Title="Values" Foreground="White"/>
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
+
+        <!-- Devices List Button -->
+        <StackPanel Grid.Row="3" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Button Content="Devices List"
+                    Width="180"
+                    Height="45"
+                    Background="#3a8edb"
+                    Foreground="White"
+                    FontWeight="SemiBold"
+                    FontSize="15"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Click="OpenDevicesWindow_Click">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}"
+                                            CornerRadius="10"
+                                            Padding="10"
+                                            SnapsToDevicePixels="True">
+                                        <ContentPresenter HorizontalAlignment="Center"
+                                                          VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#2c7ac2"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

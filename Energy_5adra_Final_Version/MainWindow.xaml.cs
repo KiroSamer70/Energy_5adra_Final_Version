@@ -109,5 +109,14 @@ namespace Energy_5adra_Final_Version
 
             base.OnClosed(e);
         }
+
+        private void OpenDevicesWindow_Click(object sender, RoutedEventArgs e)
+        {
+            double currentVoltage = 0;
+            double.TryParse(VoltageText.Text.Split(' ')[0], out currentVoltage);
+
+            DevicesWindow win = new DevicesWindow(currentVoltage);
+            win.Show();
+        }
     }
 }
