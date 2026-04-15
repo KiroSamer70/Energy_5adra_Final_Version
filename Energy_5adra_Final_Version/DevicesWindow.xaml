@@ -80,7 +80,7 @@
 
         <!-- Button with animation -->
         <Button Grid.Row="2"
-                Content="⚙️ Check Voltage"
+                Content="⚙️ Operate device"
                 Width="180"
                 Height="45"
                 HorizontalAlignment="Center"

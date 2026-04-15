@@ -1,16 +1,19 @@
-﻿using System;
+﻿using LiveCharts;
+using LiveCharts.Wpf;
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
-using LiveCharts;
-using LiveCharts.Wpf;
+using LiveChartsSeparator = LiveCharts.Wpf.Separator;
 
 namespace Energy_5adra_Final_Version
 {
     public partial class MainWindow : Window
     {
-        SerialPort serialPort;
+        public static SerialPort serialPort; // Made public static to access from DevicesWindow
+        public static bool relayModule = true; // true = ON, false = OFF (stopped)
         int time = 0;
         List<string> timeLabels = new List<string>();
 
@@ -29,7 +32,7 @@ namespace Energy_5adra_Final_Version
             };
 
             SensorChart.AxisX[0].Labels = timeLabels;
-            SensorChart.AxisX[0].Separator = new Separator { Step = 5 };
+            SensorChart.AxisX[0].Separator = new LiveChartsSeparator { Step = 5 };
 
             try
             {
@@ -70,7 +73,8 @@ namespace Energy_5adra_Final_Version
                 }
                 else if (part.StartsWith("Resistance:"))
                 {
-                    ResistanceText.Text = part.Replace("Resistance:", "").Trim();
+                    string resistanceValue = part.Replace("Resistance:", "").Trim();
+                    ResistanceText.Text = resistanceValue.Replace("??", "ohm");
                 }
                 else if (part.StartsWith("Power:"))
                 {
@@ -98,13 +102,11 @@ namespace Energy_5adra_Final_Version
                 powerSeries.RemoveAt(0);
                 timeLabels.RemoveAt(0);
             }
-
-            // التحديث الضمني يتم تلقائياً، مش لازم نعمل SensorChart.Update()
         }
 
         protected override void OnClosed(EventArgs e)
         {
-            if (serialPort.IsOpen)
+            if (serialPort != null && serialPort.IsOpen)
                 serialPort.Close();
 
             base.OnClosed(e);
@@ -117,6 +119,76 @@ namespace Energy_5adra_Final_Version
 
             DevicesWindow win = new DevicesWindow(currentVoltage);
             win.Show();
+        }
+
+        private void SimulateFault_Click(object sender, RoutedEventArgs e)
+        {
+            relayModule = false;
+
+            // Send relay-off command to Arduino to turn off the relay module
+            if (serialPort != null && serialPort.IsOpen)
+            {
+                try
+                {
+                    serialPort.WriteLine("RELAY_OFF\n");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error sending relay-off command: " + ex.Message);
+                }
+            }
+
+            Window faultWindow = new Window
+            {
+                Title = "⚠ FAULT DETECTED",
+                Width = 420,
+                Height = 220,
+                Background = new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#1e1e1e")),
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                ResizeMode = ResizeMode.NoResize
+            };
+
+            StackPanel panel = new StackPanel
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(20)
+            };
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = "⚠ WARNING!!",
+                FontSize = 26,
+                FontWeight = FontWeights.Bold,
+                Foreground = new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#e74c3c")),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 0, 0, 12)
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = "The device has an issue and we stopped it\nimmediately for your safety.",
+                FontSize = 14,
+                Foreground = System.Windows.Media.Brushes.White,
+                TextAlignment = TextAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 0, 0, 8)
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = "Relay Module: OFF",
+                FontSize = 13,
+                FontWeight = FontWeights.SemiBold,
+                Foreground = new System.Windows.Media.SolidColorBrush(
+                    (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#e74c3c")),
+                HorizontalAlignment = HorizontalAlignment.Center
+            });
+
+            faultWindow.Content = panel;
+            faultWindow.ShowDialog();
         }
     }
 }
